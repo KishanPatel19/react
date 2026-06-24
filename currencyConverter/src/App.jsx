@@ -7,24 +7,25 @@ import useCurrencyInfo from "./hooks/useCurrency";
 import InputBox from "./components/InputBox";
 
 function App() {
-const [amount,setAmount] = useState(0)
-const[from,setFrom] = useState("usd")
-const [to,setTo]= useState("inr")
-const [convertedAmount,setConvertedAmount]= useState(0)
+  const [amount,setAmount] = useState(0)
+  const[convertedAmount,setConvertedAmount] = useState(0)
+  const [from,setFrom] = useState("usd")
+  const [to,setTo] = useState("inr")
 
-let currencyInfo = useCurrencyInfo(from)
-let options = Object.keys(currencyInfo);
+  let currencyInfo = useCurrencyInfo(from);
 
-const swap =()=>{
-  setFrom((prev)=>to)
-  setTo(prev=>from)
-  setConvertedAmount(amount)
-  setAmount(convertedAmount)
-}
+  let options = Object.keys(currencyInfo);
 
-const convert =()=>{
-  setConvertedAmount(amount * currencyInfo[to])
-}
+  const swap =()=>{
+    setAmount((prev)=>convertedAmount)
+    setConvertedAmount((prev)=>amount)
+    setTo(()=>from)
+    setFrom(()=>to)
+  }
+
+  const convert=()=>{
+    setConvertedAmount( amount * currencyInfo[to])
+  }
 
   return (
     <div
@@ -38,17 +39,17 @@ const convert =()=>{
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              convert()
+            convert()
             }}
           >
             <div className="w-full mb-1">
               <InputBox 
               label="From"
               amount={amount}
-              onAmountChnage={(value)=>setAmount(value)}
-              onCurrencyChange={(value)=>setFrom(value)}
+              onAmountChange={(value)=>setAmount(value)}
               selectCurrency={from}
               currencyOptions={options}
+              onCurrencyChange={(value)=>setFrom(value)}
 
 
               />
@@ -57,7 +58,7 @@ const convert =()=>{
               <button
                 type="button"
                 className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-white rounded-md bg-blue-600 text-white px-2 py-0.5"
-                onClick={swap}
+              onClick={swap}
               >
                 swap
               </button>
@@ -67,8 +68,8 @@ const convert =()=>{
               label="To"
               amount={convertedAmount}
               onCurrencyChange={(value)=>setTo(value)}
-              selectCurrency={to}
               currencyOptions={options}
+              selectCurrency={to}
               amountDisable
               />
             </div>
